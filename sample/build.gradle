@@ -35,5 +35,5 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
 
-    implementation project(':easyviewindicator')
+    implementation project(':easy-recyclerview-indicator')
 }
