@@ -87,6 +87,18 @@ recyclerView2.addOnScrollListener(new RecyclerView.OnScrollListener() {
 ```
 If you want to customize more, you can read the class: `RecyclerViewIndicator`.
 
+Properties that you can config in your xml:
+* app:avi_width
+* app:avi_height
+* app:avi_margin
+* app:avi_drawable
+* app:avi_drawable_unselected
+* app:avi_animator
+* app:avi_animator_reverse
+* app:avi_animation_enable (default:true)
+* app:avi_orientation (default:horizontal)
+* app:avi_gravity (default:center)
+
 ### What's in the next version?
 What are the things you want to have in this library? Contact me or create a new issue for it.
 
