@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView (R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView (R.id.circleIndicator)
-    RecyclerViewIndicator anyViewIndicator;
+    RecyclerViewIndicator recyclerViewIndicator;
 
     @BindView (R.id.recyclerView2)
     RecyclerView recyclerView2;
@@ -36,9 +36,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(new TestAdapter());
-
-        anyViewIndicator.setRecyclerView(recyclerView);
-
+        recyclerViewIndicator.setRecyclerView(recyclerView);
 
         recyclerView2.setLayoutManager(new LinearLayoutManager(this));
         recyclerView2.setAdapter(new TestAdapter());
