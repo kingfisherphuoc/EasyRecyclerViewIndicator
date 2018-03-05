@@ -105,7 +105,7 @@ Properties that you can config in your xml:
 What are the things you want to have in this library? Contact me or create a new issue for it.
 
 ### Special thanks
-Thank Ongakuer as I re-use a lot of code of this [ongakuer/CircleIndicator](https://github.com/ongakuer/CircleIndicator)
+Thank Ongakuer as I reused a lot of code of this [ongakuer/CircleIndicator](https://github.com/ongakuer/CircleIndicator)
 
 ### License
 Copyright 2018 Doan Hong Phuoc
