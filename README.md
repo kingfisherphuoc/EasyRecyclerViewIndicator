@@ -1,5 +1,7 @@
 # EasyRecyclerViewIndicator
 As the name suggests, you can use this library to show indicator for your `RecyclerView` or any `View` you want easily.
+
+![alt sample](https://user-images.githubusercontent.com/962484/36985122-0509cc56-20c9-11e8-8e2a-2fa39b394f52.png)
 ### Installing
 Use Gradle:
 ```gradle
