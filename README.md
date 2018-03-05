@@ -60,9 +60,38 @@ This is how we declare the indicators in XML (1 horizontal indicator, 1 vertical
 
     </com.kingfisher.easyviewindicator.AnyViewIndicator>
 ```
+For `RecyclerView`, it's straighforward:
+```java
+recyclerView.setAdapter(new TestAdapter());
+recyclerViewIndicator.setRecyclerView(recyclerView);
+// If you need to change the adapter size, you should call this function
+recyclerViewIndicator.forceUpdateItemCount();
+```
+If you want to display the indicator for anything you need, that's how you should do:
+```java
+verticalIndicator.setItemCount(10); // set the total count of  indicator
+verticalIndicator.setCurrentPosition(0); // set the current position of indicator
+// Display the current number of indicator when recyclerview scrolls.
+recyclerView2.addOnScrollListener(new RecyclerView.OnScrollListener() {
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+        switch (newState) {
+            case RecyclerView.SCROLL_STATE_IDLE:
+                int position = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                verticalIndicator.setCurrentPosition(position);
+                break;
+        }
+    }
+});
+```
+If you want to customize more, you can read the class: `RecyclerViewIndicator`.
 
 ### What's in the next version?
 What are the things you want to have in this library? Contact me or create a new issue for it.
+
+### Special thanks
+Thank Ongakuer as I re-use a lot of code of this [ongakuer/CircleIndicator](https://github.com/ongakuer/CircleIndicator)
 
 ### License
 Copyright 2018 Doan Hong Phuoc
