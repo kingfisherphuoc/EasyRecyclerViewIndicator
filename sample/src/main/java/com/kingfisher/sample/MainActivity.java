@@ -1,31 +1,39 @@
 package com.kingfisher.sample;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kingfisher.easyviewindicator.AnyViewIndicator;
+import com.kingfisher.easyviewindicator.GridLayoutSnapHelper;
 import com.kingfisher.easyviewindicator.RecyclerViewIndicator;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView (R.id.recyclerView)
+    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @BindView (R.id.circleIndicator)
-    RecyclerViewIndicator recyclerViewIndicator;
+    @BindView(R.id.recyclerViewIndicator)
+    RecyclerViewIndicator horizontalIndicator;
 
-    @BindView (R.id.recyclerView2)
+    @BindView(R.id.recyclerView2)
     RecyclerView recyclerView2;
-    @BindView (R.id.anyViewIndicator)
+    @BindView(R.id.anyViewIndicator)
     AnyViewIndicator verticalIndicator;
+
+    @BindView(R.id.recyclerView3)
+    RecyclerView recyclerView3;
+    @BindView(R.id.anyViewIndicator2)
+    AnyViewIndicator gridIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +41,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        setupLinearRecyclerViewHorizontal();
+        setupLinearRecyclerViewVertial();
+        setupGridRecyclerView();
+    }
+
+    private void setupGridRecyclerView() {
+        gridIndicator.setItemCount(2);
+        gridIndicator.setCurrentPosition(0);
+        recyclerView3.setLayoutManager(new GridLayoutManager(this, 2, RecyclerView.HORIZONTAL, false));
+        recyclerView3.setAdapter(new TestAdapter());
+        GridLayoutSnapHelper gridLayoutSnapHelper = new GridLayoutSnapHelper(6);
+        gridLayoutSnapHelper.attachToRecyclerView(recyclerView3);
+
+
+        recyclerView3.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                switch (newState) {
+                    case RecyclerView.SCROLL_STATE_IDLE:
+                        int position = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                        gridIndicator.setCurrentPosition((int) (Math.ceil(Double.valueOf(position)/ 6) - 1));
+                        break;
+                }
+            }
+        });
+    }
+
+    private void setupLinearRecyclerViewHorizontal() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(new TestAdapter());
-        recyclerViewIndicator.setRecyclerView(recyclerView);
+        horizontalIndicator.setRecyclerView(recyclerView);
+    }
 
+    private void setupLinearRecyclerViewVertial() {
         recyclerView2.setLayoutManager(new LinearLayoutManager(this));
         recyclerView2.setAdapter(new TestAdapter());
         verticalIndicator.setItemCount(10);
@@ -55,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
 
@@ -78,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            @BindView (R.id.tvName)
+            @BindView(R.id.tvName)
             TextView textView;
 
             public ViewHolder(View itemView) {

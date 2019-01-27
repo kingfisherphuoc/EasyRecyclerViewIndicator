@@ -6,13 +6,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.support.annotation.AnimatorRes;
-import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+
+import androidx.annotation.AnimatorRes;
+import androidx.annotation.DrawableRes;
 
 /**
  * Created by kingfisher on 3/5/18.
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 public class AnyViewIndicator extends LinearLayout {
 
     private final static int DEFAULT_INDICATOR_WIDTH = 5;
+    protected int mLastPosition = -1;
     //    private ViewPager mViewpager;
 //    private RecyclerView recyclerView;
     private int mIndicatorMargin = -1;
@@ -35,8 +37,8 @@ public class AnyViewIndicator extends LinearLayout {
     private Animator mImmediateAnimatorOut;
     private Animator mImmediateAnimatorIn;
     private boolean isAnimationEnable = true;
-
-    protected int mLastPosition = -1;
+    private int currentPosition;
+    private int itemCount;
 
     public AnyViewIndicator(Context context) {
         super(context);
@@ -53,7 +55,7 @@ public class AnyViewIndicator extends LinearLayout {
         init(context, attrs);
     }
 
-    @TargetApi (Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public AnyViewIndicator(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context, attrs);
@@ -151,40 +153,6 @@ public class AnyViewIndicator extends LinearLayout {
     private Animator createAnimatorOut(Context context) {
         return AnimatorInflater.loadAnimator(context, mAnimatorResId);
     }
-
-    private Animator createAnimatorIn(Context context) {
-        Animator animatorIn;
-        if (mAnimatorReverseResId == 0) {
-            animatorIn = AnimatorInflater.loadAnimator(context, mAnimatorResId);
-            animatorIn.setInterpolator(new ReverseInterpolator());
-        } else {
-            animatorIn = AnimatorInflater.loadAnimator(context, mAnimatorReverseResId);
-        }
-        return animatorIn;
-    }
-
-    /**
-     * Force the circle indicator upgrade
-     */
-    protected void updateCircleIndicator() {
-        int newCount = getItemCount();
-        int currentCount = getChildCount();
-
-        if (newCount == currentCount) {  // No change
-            return;
-        } else if (mLastPosition < newCount) {
-            mLastPosition = getCurrentPosition();
-        } else {
-            mLastPosition = -1;
-        }
-
-        // show the first
-        if (mLastPosition == -1 && newCount > 0) {
-            mLastPosition = 0;
-        }
-
-        createIndicators();
-    }
 //    public void setRecyclerView(final RecyclerView recyclerView) {
 //        this.recyclerView = recyclerView;
 //        if (recyclerView != null) {
@@ -222,6 +190,40 @@ public class AnyViewIndicator extends LinearLayout {
 //        }
 //    };
 
+    private Animator createAnimatorIn(Context context) {
+        Animator animatorIn;
+        if (mAnimatorReverseResId == 0) {
+            animatorIn = AnimatorInflater.loadAnimator(context, mAnimatorResId);
+            animatorIn.setInterpolator(new ReverseInterpolator());
+        } else {
+            animatorIn = AnimatorInflater.loadAnimator(context, mAnimatorReverseResId);
+        }
+        return animatorIn;
+    }
+
+    /**
+     * Force the circle indicator upgrade
+     */
+    protected void updateCircleIndicator() {
+        int newCount = getItemCount();
+        int currentCount = getChildCount();
+
+        if (newCount == currentCount) {  // No change
+            return;
+        } else if (mLastPosition < newCount) {
+            mLastPosition = getCurrentPosition();
+        } else {
+            mLastPosition = -1;
+        }
+
+        // show the first
+        if (mLastPosition == -1 && newCount > 0) {
+            mLastPosition = 0;
+        }
+
+        createIndicators();
+    }
+
     protected void onCurrentLocationChange() {
         if (isAnimationEnable) {
             if (mAnimatorIn.isRunning()) {
@@ -256,12 +258,8 @@ public class AnyViewIndicator extends LinearLayout {
         mLastPosition = position;
     }
 
-    private int currentPosition;
-    private int itemCount;
-
-    public void setCurrentPosition(int currentPosition) {
-        this.currentPosition = currentPosition;
-        onCurrentLocationChange();
+    protected int getItemCount() {
+        return this.itemCount;
     }
 
     public void setItemCount(int itemCount) {
@@ -269,13 +267,14 @@ public class AnyViewIndicator extends LinearLayout {
         updateCircleIndicator();
     }
 
-    protected int getItemCount() {
-        return this.itemCount;
-    }
-
     protected int getCurrentPosition() {
 //        return ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
         return currentPosition;
+    }
+
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
+        onCurrentLocationChange();
     }
 
     private void createIndicators() {
@@ -330,16 +329,16 @@ public class AnyViewIndicator extends LinearLayout {
         }
     }
 
+    public int dip2px(float dpValue) {
+        final float scale = getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
     private class ReverseInterpolator implements Interpolator {
         @Override
         public float getInterpolation(float value) {
             return Math.abs(1.0f - value);
         }
 
-    }
-
-    public int dip2px(float dpValue) {
-        final float scale = getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
     }
 }
